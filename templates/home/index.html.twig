@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+    <style>
+        #renderFrame {
+            border: none;
+            width: 100%;
+            margin:0;
+            padding: 0;
+        }
+    </style>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6 mt-4">
+                <form class="form-inline">
+                    <div class="input-group mb-2 mr-sm-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">+</div>
+                        </div>
+                        <input type="text" class="form-control" id="name-css" name="name">
+                        <input type="hidden" id="type" name="type" value="css">
+                    </div>
+                    <div class="input-group mb-2 mr-sm-2">
+                        <button type="submit" id="save" class="btn btn-outline-success"><i class="fas fa-save"></i></button>
+                    </div>
+                    <div class="input-group mb-2 mr-sm-2">
+                        <select class="form-control" id="select-css">
+                            {% for i in css %}
+                                <option data-cs="{{ i.content }}" value="{{ i.name|title }}" >{{ i.name|title }}</option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+                    <div class="input-group mb-2 mr-sm-2">
+                        <button class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+                    </div>
+
+                </form>
+                <textarea id="code-css" name="content"></textarea>
+            </div>
+            <div class="col-6"><a href="" class="float-right">DATA</a><br>
+                <textarea id="code-json" name="code-json">
+Array (
+            [designation] => Array (
+                [id] => 2020_2019
+                [rawvalue] => Escargots
+
+            )
+        )
+                </textarea></div>
+        </div>
+        <div class="row">
+
+            <div class="col-6"><a href="" class="float-right">TEMPLATE</a><br>
+                <textarea id="code-html" name="code-html"></textarea>
+            </div>
+
+            <div class="col-6" style="border:1px solid #eee;"><button id="btn-run" class="btn btn-success" ><i class="fas fa-play"></i></button> <button id="btn-Preview-Image" class="btn btn-success" ><i class="far fa-image"></i></button> <a href="" class="float-right">AFFICHAGE</a>
+                <iframe id="renderFrame" ></iframe>
+            </div>
+        </div>
+    </div>
+    <canvas id="canvas"></canvas>
+    {% endblock %}
+    {% block javascripts %}
+        {{ parent() }}
+    <script type="text/javascript">
+        window.onload = function () {
+            var te_css = document.getElementById("code-css");
+            var te_html = document.getElementById("code-html");
+            var te_json = document.getElementById("code-json");
+            window.editor_css = CodeMirror.fromTextArea(te_css, {
+                mode: "css",
+                lineNumbers: true,
+                lineWrapping: true,
+                extraKeys: {"Ctrl-Space": "autocomplete"}
+            });
+            window.editor_json = CodeMirror.fromTextArea(te_json, {
+                mode: {name: "javascript", json: true},
+                lineNumbers: true,
+                lineWrapping: true,
+                extraKeys: {"Ctrl-Space": "autocomplete"},
+            });
+            window.editor_html = CodeMirror.fromTextArea(te_html, {
+                mode: "htmlmixed",
+                lineNumbers: true,
+                lineWrapping: true,
+                extraKeys: {"Ctrl-Space": "autocomplete"}
+            });
+            //  console.log(editor_css.getValue())
+            $("#btn-run").click(function (event) {
+                event.preventDefault();
+                //
+
+
+                var template = editor_html.getValue();
+                var data = editor_json.getValue();
+                var ss = null;
+                var rendered = null;
+                var mm = $.get("{{path('pj')}}").then((resp) => {
+                    ss = JSON.parse(resp);
+                });
+                setTimeout(function () {
+                    rendered = Mustache.render(template, ss);
+                    console.log(rendered);
+                    $('#renderFrame').contents().find('body').html(rendered);
+                    $('#renderFrame').contents().find('head').html('<style>' + editor_css.getValue() + '</style>');
+                }, 5000);
+            });
+        };
+        $("#select-css").on('change', function () {
+            $("#name-css").val(this.value);
+            var cs1 = $(this).find('option:selected').attr('data-cs');
+            editor_css.setValue(cs1);
+        });
+        $("#save").click(function (event) {
+            event.preventDefault();
+            var $url = "{{ path('css_new',{'id':mustache.id}) }}";
+            $.ajax({
+                type: "GET",
+                url: $url,
+                data: {
+
+                    name: $("#name-css").val(),
+                    content: $("#code-css").val(),
+                    type: 'css'
+                },
+                success: function () {
+                    console.log(data)
+                }
+            });
+        });
+        $("#btn-Preview-Image").on('click', function () {
+            console.log("test r")
+
+        });
+    </script>
+{% endblock %}

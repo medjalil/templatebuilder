@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Environment index{% endblock %}
+
+{% block body %}
+    <div class="col-6">
+        <h1 class="mt-4">Environnement <a href="{{ path('environment_new') }}" class="btn btn-primary float-right">Ajouter</a></h1>
+
+        {# Afficher le 10 permier triage desc #}
+        <table class="table table-bordered">
+            {% for environment in environments %}
+                <tr>
+
+                    <td><a href="{{ path('environment_show', {'id': environment.id}) }}">{{ environment.name|title }}</td>
+                    <td width="20%">
+                        <a href="{{ path('environment_edit', {'id': environment.id}) }}">Modifier</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

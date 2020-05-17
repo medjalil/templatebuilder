@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Mustache{% endblock %}
+
+{% block body %}
+    <h1>Edit Mustache</h1>
+
+    {{ include('mustache/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('mustache_index') }}">back to list</a>
+
+    {{ include('mustache/_delete_form.html.twig') }}
+{% endblock %}

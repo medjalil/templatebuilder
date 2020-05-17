@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mustache index{% endblock %}
+
+{% block body %}
+    <h1>Mustache index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Function</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for mustache in mustaches %}
+            <tr>
+                <td>{{ mustache.id }}</td>
+                <td>{{ mustache.name }}</td>
+                <td>{{ mustache.function }}</td>
+                <td>
+                    <a href="{{ path('mustache_show', {'id': mustache.id}) }}">show</a>
+                    <a href="{{ path('mustache_edit', {'id': mustache.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('mustache_new') }}">Create new</a>
+{% endblock %}
