@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Repository\MustacheRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=MustacheRepository::class)
+ * @ApiResource()
  */
 class Mustache {
 
@@ -16,6 +19,7 @@ class Mustache {
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"read:ressource"})
      */
     private $id;
 
@@ -36,7 +40,7 @@ class Mustache {
     private $environment;
 
     /**
-     * @ORM\OneToMany(targetEntity=Ressource::class, mappedBy="mustache", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Ressource::class, mappedBy="mustache", orphanRemoval=true,cascade={"persist"})
      */
     private $ressources;
 
@@ -104,6 +108,10 @@ class Mustache {
         }
 
         return $this;
+    }
+
+    public function __toString() {
+        return $this->getId();
     }
 
 }

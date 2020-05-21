@@ -16,16 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class EnvironmentController extends AbstractController {
 
     /**
-     * @Route("/", name="environment_index", methods={"GET"})
-     */
-    public function index(EnvironmentRepository $environmentRepository): Response {
-        return $this->render('environment/index.html.twig', [
-                    'environments' => $environmentRepository->findAll(),
-        ]);
-    }
-
-    /**
-     * Ajouter nouveau env
      * @Route("/new", name="environment_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response {
@@ -38,7 +28,7 @@ class EnvironmentController extends AbstractController {
             $entityManager->persist($environment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('environment_index');
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('environment/new.html.twig', [
@@ -66,7 +56,7 @@ class EnvironmentController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('environment_index');
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('environment/edit.html.twig', [
@@ -85,7 +75,7 @@ class EnvironmentController extends AbstractController {
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('environment_index');
+        return $this->redirectToRoute('home');
     }
 
 }

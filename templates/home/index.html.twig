@@ -4,71 +4,205 @@
 
 {% block body %}
     <style>
+        .content {
+            display:none;
+        }
+
+        .preload {
+            margin:0;
+            position:absolute;
+            top:50%;
+            left:50%;
+            margin-right: -50%;
+            transform:translate(-50%, -50%);
+        }
+
+
         #renderFrame {
             border: none;
             width: 100%;
             margin:0;
             padding: 0;
+            width: 630px;
+            height: 300px;
+        }
+        .CodeMirror {
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
         }
     </style>
 
     <div class="container-fluid">
+        <div style="z-index: 300; position: absolute; top: 2vh; right: 2vh;">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-body" id="toast-body">
+                </div>
+            </div>
+        </div>
+
         <div class="row">
-            <div class="col-6 mt-4">
+            <!-- css bloc -->
+            <div class="col-6 mt-4 " id="css_full_field">
                 <form class="form-inline">
                     <div class="input-group mb-2 mr-sm-2">
                         <div class="input-group-prepend">
-                            <div class="input-group-text">+</div>
+                            <div class="input-group-text"><i class="fas fa-plus"></i></div>
                         </div>
                         <input type="text" class="form-control" id="name-css" name="name">
                         <input type="hidden" id="type" name="type" value="css">
                     </div>
                     <div class="input-group mb-2 mr-sm-2">
-                        <button type="submit" id="save" class="btn btn-outline-success"><i class="fas fa-save"></i></button>
+                        <button type="submit" id="save_css" class="btn btn-outline-primary">
+                            <i id="save_css_icon" class="fas fa-save"></i>
+                            <div class="spinner-border spinner-border-sm text-primary" role="status" id="add_css_item_loader">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </button>
                     </div>
-                    <div class="input-group mb-2 mr-sm-2">
+                    <div class="input-group mb-2 mr-sm-2" style="width:180px;overflow: hidden;">
                         <select class="form-control" id="select-css">
-                            {% for i in css %}
-                                <option data-cs="{{ i.content }}" value="{{ i.name|title }}" >{{ i.name|title }}</option>
-                            {% endfor %}
-
                         </select>
                     </div>
                     <div class="input-group mb-2 mr-sm-2">
-                        <button class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+                        <button type="submit" id="del_css" class="btn btn-outline-danger">
+                            <i id="del_css_icon" class="fas fa-trash"></i>
+                            <div class="spinner-border spinner-border-sm text-danger" role="status" id="del_css_item_loader">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </button>
                     </div>
-
                 </form>
                 <textarea id="code-css" name="content"></textarea>
             </div>
-            <div class="col-6"><a href="" class="float-right">DATA</a><br>
-                <textarea id="code-json" name="code-json">
-Array (
-            [designation] => Array (
-                [id] => 2020_2019
-                [rawvalue] => Escargots
-
-            )
-        )
-                </textarea></div>
+            <!-- data bloc -->
+            <div class="col-6 mt-4">
+                <form class="form-inline">
+                    <div class="input-group mb-2 mr-sm-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <input type="text" class="form-control" id="name-data" name="name">
+                        <input type="hidden" id="type" name="type" value="data">
+                    </div>
+                    <div class="input-group mb-2 mr-sm-2">
+                        <button type="submit" id="save_data" class="btn btn-outline-primary">
+                            <i id="save_data_icon" class="fas fa-save"></i>
+                            <div class="spinner-border spinner-border-sm text-primary" role="status" id="add_data_item_loader">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="input-group mb-2 mr-sm-2" style="width:180px;overflow: hidden;">
+                        <select class="form-control" id="select-data">
+                        </select>
+                    </div>
+                    <div class="input-group mb-2 mr-sm-2">
+                        <button type="submit" id="del_data" class="btn btn-outline-danger">
+                            <i id="del_data_icon" class="fas fa-trash"></i>
+                            <div class="spinner-border spinner-border-sm text-danger" role="status" id="del_data_item_loader">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+                <textarea id="code-json">{ }</textarea>
+            </div>
         </div>
         <div class="row">
-
-            <div class="col-6"><a href="" class="float-right">TEMPLATE</a><br>
-                <textarea id="code-html" name="code-html"></textarea>
+            <!-- Template bloc -->
+            <div class="col-6">
+                <form class="form-inline">
+                    <div class="input-group mb-2 mr-sm-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="fas fa-plus"></i></div>
+                        </div>
+                        <input type="text" class="form-control" id="name-template" name="name">
+                        <input type="hidden" id="type" name="type" value="template">
+                    </div>
+                    <div class="input-group mb-2 mr-sm-2">
+                        <button type="submit" id="save_template" class="btn btn-outline-primary">
+                            <i id="save_template_icon" class="fas fa-save"></i>
+                            <div class="spinner-border spinner-border-sm text-primary" role="status" id="add_template_item_loader">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="input-group mb-2 mr-sm-2" style="width:180px;overflow: hidden;">
+                        <select class="form-control" id="select-template">
+                        </select>
+                    </div>
+                    <div class="input-group mb-2 mr-sm-2">
+                        <button type="submit" id="del_template" class="btn btn-outline-danger">
+                            <i id="del_template_icon" class="fas fa-trash"></i>
+                            <div class="spinner-border spinner-border-sm text-danger" role="status" id="del_template_item_loader">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+                <textarea id="code-html"></textarea>
             </div>
 
-            <div class="col-6" style="border:1px solid #eee;"><button id="btn-run" class="btn btn-success" ><i class="fas fa-play"></i></button> <button id="btn-Preview-Image" class="btn btn-success" ><i class="far fa-image"></i></button> <a href="" class="float-right">AFFICHAGE</a>
-                <iframe id="renderFrame" ></iframe>
+            <!-- view bloc -->
+            <div class="col-6">
+                <div class="mb-2">
+                    <button id="btn-run" class="btn btn-success mr-2" ><i class="fas fa-play"></i></button>
+                    <button id="btn-Preview-Image" class="btn btn-outline-warning" ><i class="far fa-image"></i></button>
+                    <a href="{{ path('home') }}" class="btn btn-outline-secondary float-right"><i class="fas fa-home"></i></a>
+                </div>
+                <iframe id="renderFrame" style="border:1px solid #ddd;"></iframe>
             </div>
         </div>
     </div>
-    <canvas id="canvas"></canvas>
-    {% endblock %}
-    {% block javascripts %}
-        {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
     <script type="text/javascript">
+        function toastShow(type) {
+
+            $('#toast-body').html("The " + type + " resources is added successfuly")
+            $('.toast').toast({
+                delay: 7000
+            });
+            $('.toast').toast('show');
+        }
+        $('#add_css_item_loader').hide();
+        $('#del_css_item_loader').hide();
+        $('#add_data_item_loader').hide();
+        $('#del_data_item_loader').hide();
+        $('#add_template_item_loader').hide();
+        $('#del_template_item_loader').hide();
+        //$('.toast').toast('hide');
+        function reloadCssRessource() {
+            var url = "/api/ressources";
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: 'json',
+                success: function (resp) {
+                    $("#select-css").html("");
+                    $.each(resp, function (key, val) {
+                        if (val.type == "css") {
+                            $("#select-css").append(
+                                    `<option data-cs="${val.content}" value="${val.name}" data-id="${val.id}">${val.name}</option>`
+                                    );
+                        } else if (val.type == "data") {
+                            $("#select-data").append(
+                                    `<option data-cs='${val.content}' value="${val.name}" data-id="${val.id}">${val.name}</option>`
+                                    );
+                        } else {
+                            $("#select-template").append(
+                                    `<option data-cs="${val.content}" value="${val.name}" data-id="${val.id}">${val.name}</option>`
+                                    );
+                        }
+
+                    });
+                }
+            });
+        }
+        reloadCssRessource();
         window.onload = function () {
+
             var te_css = document.getElementById("code-css");
             var te_html = document.getElementById("code-html");
             var te_json = document.getElementById("code-json");
@@ -82,7 +216,7 @@ Array (
                 mode: {name: "javascript", json: true},
                 lineNumbers: true,
                 lineWrapping: true,
-                extraKeys: {"Ctrl-Space": "autocomplete"},
+                extraKeys: {"Ctrl-Space": "autocomplete"}
             });
             window.editor_html = CodeMirror.fromTextArea(te_html, {
                 mode: "htmlmixed",
@@ -90,52 +224,219 @@ Array (
                 lineWrapping: true,
                 extraKeys: {"Ctrl-Space": "autocomplete"}
             });
-            //  console.log(editor_css.getValue())
             $("#btn-run").click(function (event) {
                 event.preventDefault();
-                //
-
-
                 var template = editor_html.getValue();
                 var data = editor_json.getValue();
-                var ss = null;
-                var rendered = null;
-                var mm = $.get("{{path('pj')}}").then((resp) => {
-                    ss = JSON.parse(resp);
-                });
-                setTimeout(function () {
-                    rendered = Mustache.render(template, ss);
-                    console.log(rendered);
-                    $('#renderFrame').contents().find('body').html(rendered);
-                    $('#renderFrame').contents().find('head').html('<style>' + editor_css.getValue() + '</style>');
-                }, 5000);
+                if (data.trim() == "") {
+                    data = "{}";
+                }
+                rendered = Mustache.render(template, JSON.parse(data));
+                console.log(rendered);
+                $('#renderFrame').contents().find('body').html(rendered);
+                $('#renderFrame').contents().find('head').html('<style>' + editor_css.getValue() + '</style>');
             });
-        };
-        $("#select-css").on('change', function () {
-            $("#name-css").val(this.value);
-            var cs1 = $(this).find('option:selected').attr('data-cs');
-            editor_css.setValue(cs1);
-        });
-        $("#save").click(function (event) {
-            event.preventDefault();
-            var $url = "{{ path('css_new',{'id':mustache.id}) }}";
-            $.ajax({
-                type: "GET",
-                url: $url,
-                data: {
+            $("#select-css").on('change', function () {
+                $("#name-css").val(this.value);
+                var cs1 = $(this).find('option:selected').attr('data-cs');
+                editor_css.setValue(cs1);
+            });
+            $("#select-data").on('change', function () {
+                $("#name-data").val(this.value);
+                var cs2 = $(this).find('option:selected').attr('data-cs');
+                editor_json.setValue(cs2);
+            });
+            $("#select-template").on('change', function () {
+                $("#name-template").val(this.value);
+                var cs3 = $(this).find('option:selected').attr('data-cs');
+                editor_html.setValue(cs3);
+            });
+            $("#save_css").click(function (event) {
+                event.preventDefault();
+                var css_name = $("#name-css").val();
+                if (css_name == "") {
+                    $("#name-css").addClass("is-invalid");
+                } else {
+                    var css_code = editor_css.getValue();
+                    var mustache_id = "{{mustache.id}}";
+                    $.ajax({
+                        type: "POST",
+                        beforeSend: function () {
+                            $('#add_css_item_loader').show();
+                            $('#save_css_icon').hide();
+                            $('#save_css').attr('disabled', true);
+                        },
+                        complete: function () {
+                            $('#add_css_item_loader').hide();
+                            $('#save_css_icon').show();
+                            $('#save_css').attr('disabled', false);
+                        },
+                        contentType: "application/json; charset=utf-8",
+                        url: "/api/ressources",
+                        data: '{"name":"' + css_name + '","type":"css","content":"' + css_code + '","mustache": "/api/mustaches/' + mustache_id + '"}',
+                        dataType: "json"
+                        , success: function (resp) {
+                            $("#select-css").append(
+                                    `<option data-cs="${css_code}" value="${css_name}" data-id="${resp.id}">${css_name}</option>`
+                                    );
+                            $("#select-css").val(css_name);
+                            if ($("#name-css").hasClass("is-invalid")) {
+                                $("#name-css").removeClass("is-invalid")
+                            }
+                            toastShow("Css");
 
-                    name: $("#name-css").val(),
-                    content: $("#code-css").val(),
-                    type: 'css'
-                },
-                success: function () {
-                    console.log(data)
+                        }
+                    });
                 }
             });
-        });
-        $("#btn-Preview-Image").on('click', function () {
-            console.log("test r")
+            $("#save_data").click(function (event) {
+                event.preventDefault();
+                var name = $("#name-data").val();
+                if (name == "") {
+                    $("#name-data").addClass("is-invalid");
+                } else {
+                    var code = editor_json.getValue();
+                    var mustache_id = "{{mustache.id}}";
+                    $.ajax({
+                        type: "POST",
+                        beforeSend: function () {
+                            $('#add_data_item_loader').show();
+                            $('#save_data_icon').hide();
+                            $('#save_data').attr('disabled', true);
+                        },
+                        complete: function () {
+                            $('#add_data_item_loader').hide();
+                            $('#save_data_icon').show();
+                            $('#save_data').attr('disabled', false);
+                        },
+                        contentType: "application/json; charset=utf-8",
+                        url: "/api/ressources",
+                        data: '{"name":"' + name + '","type":"data","content":"' + code + '","mustache": "/api/mustaches/' + mustache_id + '"}',
+                        dataType: "json"
+                        , success: function (resp) {
+                            $("#select-data").append(
+                                    `<option data-cs="${code}" value="${name}" data-id="${resp.id}">${name}</option>`
+                                    );
+                            $("#select-data").val(name);
+                            if ($("#name-data").hasClass("is-invalid")) {
+                                $("#name-data").removeClass("is-invalid")
+                            }
+                        }
+                    });
+                }
+            });
+            $("#save_template").click(function (event) {
+                event.preventDefault();
+                var name = $("#name-template").val();
+                if (name == "") {
+                    $("#name-template").addClass("is-invalid");
+                } else {
+                    var code = editor_json.getValue();
+                    var mustache_id = "{{mustache.id}}";
+                    $.ajax({
+                        type: "POST",
+                        beforeSend: function () {
+                            $('#add_template_item_loader').show();
+                            $('#save_template_icon').hide();
+                            $('#save_template').attr('disabled', true);
+                        },
+                        complete: function () {
+                            $('#add_template_item_loader').hide();
+                            $('#save_template_icon').show();
+                            $('#save_template').attr('disabled', false);
+                        },
+                        contentType: "application/json; charset=utf-8",
+                        url: "/api/ressources",
+                        data: '{"name":"' + name + '","type":"template","content":"' + code + '","mustache": "/api/mustaches/' + mustache_id + '"}',
+                        dataType: "json"
+                        , success: function (resp) {
+                            $("#select-template").append(
+                                    `<option data-cs="${code}" value="${name}" data-id="${resp.id}">${name}</option>`
+                                    );
+                            $("#select-template").val(name);
+                            if ($("#name-template").hasClass("is-invalid")) {
+                                $("#name-template").removeClass("is-invalid")
+                            }
+                        }
+                    });
+                }
+            });
+            $("#del_css").click(function (event) {
+                event.preventDefault();
+                var id = $("#select-css").children(':selected').attr('data-id');
+                console.log(id);
+                $.ajax({
+                    type: "DELETE",
+                    beforeSend: function () {
+                        $('#del_css_item_loader').show();
+                        $('#del_css_icon').hide();
+                        $('#del_css').attr('disabled', true);
+                    },
+                    complete: function () {
+                        $('#del_css_item_loader').hide();
+                        $('#del_css_icon').show();
+                        $('#del_css').attr('disabled', false);
+                    },
+                    url: "/api/ressources/" + id,
+                    success: function () {
+                        var st = $(`#select-css option[data-id=${id}]`);
+                        st.remove();
+                        $("#name-css").val("");
+                        editor_css.setValue("");
+                    }
+                });
+            });
+            $("#del_data").click(function (event) {
+                event.preventDefault();
+                var id = $("#select-data").children(':selected').attr('data-id');
+                console.log(id);
+                $.ajax({
+                    type: "DELETE",
+                    beforeSend: function () {
+                        $('#del_data_item_loader').show();
+                        $('#del_data_icon').hide();
+                        $('#del_data').attr('disabled', true);
+                    },
+                    complete: function () {
+                        $('#del_data_item_loader').hide();
+                        $('#del_data_icon').show();
+                        $('#del_data').attr('disabled', false);
+                    },
+                    url: "/api/ressources/" + id,
+                    success: function () {
+                        var st = $(`#select-data option[data-id=${id}]`);
+                        st.remove();
+                        $("#name-data").val("");
+                        editor_json.setValue("");
+                    }
+                });
+            });
+            $("#del_template").click(function (event) {
+                event.preventDefault();
+                var id = $("#select-template").children(':selected').attr('data-id');
+                console.log(id);
+                $.ajax({
+                    type: "DELETE",
+                    beforeSend: function () {
+                        $('#del_template_item_loader').show();
+                        $('#del_template_icon').hide();
+                        $('#del_template').attr('disabled', true);
+                    },
+                    complete: function () {
+                        $('#del_template_item_loader').hide();
+                        $('#del_template_icon').show();
+                        $('#del_template').attr('disabled', false);
+                    },
+                    url: "/api/ressources/" + id,
+                    success: function () {
+                        var st = $(`#select-template option[data-id=${id}]`);
+                        st.remove();
+                        $("#name-template").val("");
+                        editor_html.setValue("");
+                    }
+                });
+            });
+        };
 
-        });
     </script>
 {% endblock %}

@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Environment{% endblock %}
+{% block title %}Ajouter environnement{% endblock %}
 
 {% block body %}
-    <h1>Create new Environment</h1>
+    <h1 class="mt-4">Ajouter environnement</h1>
+    <div class="col-4">
+        {{ include('environment/_form.html.twig') }}
+    </div>
 
-    {{ include('environment/_form.html.twig') }}
-
-    <a href="{{ path('environment_index') }}">back to list</a>
 {% endblock %}

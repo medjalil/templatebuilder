@@ -2,11 +2,21 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RessourceRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=RessourceRepository::class)
+ * @ApiResource(
+ *      normalizationContext={"groups"={"read:ressource"}},
+ *      collectionOperations={"get","post"={"validation_groups"={"read:ressource"}}},
+ *      itemOperations={"get","DELETE"}
+ * )
  */
 class Ressource {
 
@@ -14,27 +24,32 @@ class Ressource {
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"read:ressource"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:ressource"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:ressource"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"read:ressource"})
      */
     private $content;
 
     /**
      * @ORM\ManyToOne(targetEntity=Mustache::class, inversedBy="ressources")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read:ressource"})
      */
     private $mustache;
 
