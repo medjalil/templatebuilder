@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass=RessourceRepository::class)
@@ -17,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      collectionOperations={"get","post"={"validation_groups"={"read:ressource"}}},
  *      itemOperations={"get","DELETE"}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"mustache": "exact"})
  */
 class Ressource {
 

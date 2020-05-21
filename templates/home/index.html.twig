@@ -174,7 +174,8 @@
         $('#del_template_item_loader').hide();
         //$('.toast').toast('hide');
         function reloadCssRessource() {
-            var url = "/api/ressources";
+            var id_mustache = "{{mustache.id}}";
+            var url = "/api/ressources?mustache=" + id_mustache;
             $.ajax({
                 type: "GET",
                 url: url,
@@ -236,17 +237,17 @@
                 $('#renderFrame').contents().find('body').html(rendered);
                 $('#renderFrame').contents().find('head').html('<style>' + editor_css.getValue() + '</style>');
             });
-            $("#select-css").on('change', function () {
+            $("#select-css").on('click', function () {
                 $("#name-css").val(this.value);
                 var cs1 = $(this).find('option:selected').attr('data-cs');
                 editor_css.setValue(cs1);
             });
-            $("#select-data").on('change', function () {
+            $("#select-data").on('click', function () {
                 $("#name-data").val(this.value);
                 var cs2 = $(this).find('option:selected').attr('data-cs');
                 editor_json.setValue(cs2);
             });
-            $("#select-template").on('change', function () {
+            $("#select-template").on('click', function () {
                 $("#name-template").val(this.value);
                 var cs3 = $(this).find('option:selected').attr('data-cs');
                 editor_html.setValue(cs3);
