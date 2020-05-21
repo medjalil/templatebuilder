@@ -5,7 +5,7 @@
 {% block body %}
     <h1 class="mt-4">
         {{ environment.name|title }}
-        <a href="{{ path('mustache_new') }}" class="btn btn-primary float-right">Ajouter mustache</a>
+        <a href="{{ path('mustache_new',{'id':environment.id}) }}" class="btn btn-primary float-right">Ajouter mustache</a>
     </h1>
     <table class="table table-bordered">
         <thead>
@@ -15,11 +15,11 @@
             </tr>
         </thead>
         <tbody>
-            {% for f in environment.mustaches %}
+            {% for f in environment.mustaches|sort|reverse %}
                 <tr>
                     <td>{{ f.name }}</td>
                     <td>
-                        <a href=""><i class="fas fa-pencil-alt"></i></a>
+                        <a href="{{ path('mustache_edit',{'id':f.id}) }}"><i class="fas fa-pencil-alt"></i></a>
                         <a href=""><i class="fas fa-trash"></i></a>
                         <a href="{{ path('editeur',{'id': f.id}) }}"><i class="fas fa-pencil-ruler"></i></a>
                         <a href=""><i class="fas fa-download"></i></a>

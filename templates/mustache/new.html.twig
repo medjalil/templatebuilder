@@ -1,11 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Mustache{% endblock %}
+{% block title %}Ajouter mustache{% endblock %}
 
 {% block body %}
-    <h1>Create new Mustache</h1>
-
-    {{ include('mustache/_form.html.twig') }}
-
-    <a href="{{ path('mustache_index') }}">back to list</a>
+    <h1 class="mt-4">Ajouter mustache</h1>
+    <div class="col-4">
+        {{ include('mustache/_form.html.twig') }}
+    </div>
 {% endblock %}

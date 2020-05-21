@@ -45,16 +45,14 @@
                     <ul class="navbar-nav">
                         {% if is_granted('ROLE_USER') %}
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="download">{{ app.user.fullName|title }} <span class="caret"></span></a>
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="download">{{ app.user.email }} <span class="caret"></span></a>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="">Mon compte</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="">Se déconnecter</a>
+                                    <a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a>
                                 </div>
                             </li>
                         {% else %}
                             <li class="nav-item">
-                                <a class="nav-link" href="">Se connecter</a>
+                                <a class="nav-link" href="{{ path('app_login') }}">Se connecter</a>
                             </li>
                         {% endif %}
                     </ul>
@@ -62,6 +60,12 @@
             </div>
         </nav>
         <div class="container-fluid">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-dismissible alert-success mt-4">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ message }}
+                </div>
+            {% endfor %}
             {% block body %}{% endblock %}
         </div>
         {% block javascripts %}
@@ -69,6 +73,16 @@
             <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
             <script src="https://unpkg.com/mustache@latest"></script>
+            <script>
+                $(function () {
+                    $('button').click(function () {
+                        document.querySelector('.envoyer').innerHTML = 'En cours...';
+                        this.form.submit();
+                        this.disabled = true;
+                    });
+                }
+                );
+            </script>
         {% endblock %}
     </body>
 </html>

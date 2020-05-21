@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Editeur{% endblock %}
 
 {% block body %}
     <style>
@@ -49,10 +49,9 @@
                             <div class="input-group-text"><i class="fas fa-plus"></i></div>
                         </div>
                         <input type="text" class="form-control" id="name-css" name="name">
-                        <input type="hidden" id="type" name="type" value="css">
                     </div>
                     <div class="input-group mb-2 mr-sm-2">
-                        <button type="submit" id="save_css" class="btn btn-outline-primary">
+                        <button  id="save_css" class="btn btn-outline-primary">
                             <i id="save_css_icon" class="fas fa-save"></i>
                             <div class="spinner-border spinner-border-sm text-primary" role="status" id="add_css_item_loader">
                                 <span class="sr-only">Loading...</span>
@@ -82,7 +81,6 @@
                             <div class="input-group-text"><i class="fas fa-plus"></i></div>
                         </div>
                         <input type="text" class="form-control" id="name-data" name="name">
-                        <input type="hidden" id="type" name="type" value="data">
                     </div>
                     <div class="input-group mb-2 mr-sm-2">
                         <button type="submit" id="save_data" class="btn btn-outline-primary">
@@ -117,7 +115,6 @@
                             <div class="input-group-text"><i class="fas fa-plus"></i></div>
                         </div>
                         <input type="text" class="form-control" id="name-template" name="name">
-                        <input type="hidden" id="type" name="type" value="template">
                     </div>
                     <div class="input-group mb-2 mr-sm-2">
                         <button type="submit" id="save_template" class="btn btn-outline-primary">
