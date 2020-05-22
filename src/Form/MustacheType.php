@@ -14,7 +14,7 @@ class MustacheType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
                 ->add('name', TextType::class, ['label' => 'Nom', 'attr' => ['placeholder' => 'Nom']])
-                ->add('function', TextareaType::class, ['label' => 'Fonction', 'attr' => ['placeholder' => 'Fonction']])
+                ->add('function', TextareaType::class, ['label' => 'Fonction', 'required' => false, 'attr' => ['placeholder' => 'Fonction']])
 
         ;
     }

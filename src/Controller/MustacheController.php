@@ -87,7 +87,7 @@ class MustacheController extends AbstractController {
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('mustache_index');
+        return $this->redirectToRoute('environment_show', ['id' => $mustache->getEnvironment()->getId()]);
     }
 
 }

@@ -5,18 +5,18 @@
 {% block body %}
     <h1 class="mt-4">
         Environnement
-        <a href="{{ path('environment_new') }}" class="btn btn-primary float-right envoyer">Ajouter environnement</a>
+        <a href="{{ path('environment_new') }}" class="btn btn-primary float-right">Ajouter environnement</a>
     </h1>
     <table class="table table-bordered">
         {% for environment in environments %}
             <tr>
 
-                <td><a href="{{ path('environment_show', {'id': environment.id}) }}">{{ environment.name|title }}</td>
+                <td>{{ environment.name }}</td>
                 <td width="20%">
                     <a href="{{ path('environment_edit', {'id': environment.id}) }}"><i class="fas fa-pencil-alt"></i></a>
                     <a href="" data-toggle="modal" data-target="#deleteModal-{{ environment.id }}"><i class="fas fa-trash"></i></a>
-                        {{ include('environment/_delete_form.html.twig') }}
-                </td>
+                    <a href="{{ path('environment_show', {'id': environment.id}) }}"><i class="fas fa-arrow-right"></i></a></td>
+                    {{ include('environment/_delete_form.html.twig') }}
             </tr>
         {% endfor %}
     </table>
