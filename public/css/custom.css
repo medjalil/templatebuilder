@@ -1,0 +1,23 @@
+.content {
+    display:none;
+}
+.preload {
+    margin:0;
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin-right: -50%;
+    transform:translate(-50%, -50%);
+}
+#renderFrame {
+    border: none;
+    width: 100%;
+    margin:0;
+    padding: 0;
+    width: 630px;
+    height: 300px;
+}
+.CodeMirror {
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}

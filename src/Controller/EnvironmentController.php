@@ -37,7 +37,7 @@ class EnvironmentController extends AbstractController {
             $entityManager->persist($environment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('environment_index');
         }
 
         return $this->render('environment/new.html.twig', [
@@ -65,7 +65,7 @@ class EnvironmentController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('environment_index');
         }
 
         return $this->render('environment/edit.html.twig', [
@@ -84,7 +84,7 @@ class EnvironmentController extends AbstractController {
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('environment_index');
     }
 
 }
