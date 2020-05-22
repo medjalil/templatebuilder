@@ -15,15 +15,17 @@
             </tr>
         </thead>
         <tbody>
-            {% for f in environment.mustaches|sort|reverse %}
+            {% for mustache in environment.mustaches|sort|reverse %}
                 <tr>
-                    <td>{{ f.name }}</td>
+                    <td>{{ mustache.name }}</td>
                     <td>
-                        <a href="{{ path('mustache_edit',{'id':f.id}) }}"><i class="fas fa-pencil-alt"></i></a>
-                        <a href=""><i class="fas fa-trash"></i></a>
-                        <a href="{{ path('editeur',{'id': f.id}) }}"><i class="fas fa-pencil-ruler"></i></a>
+                        <a href="{{ path('mustache_edit',{'id':mustache.id}) }}"><i class="fas fa-pencil-alt"></i></a>
+                        <a href="" data-toggle="modal" data-target="#deleteModal-{{ mustache.id }}"><i class="fas fa-trash"></i></a>
+
+                        <a href="{{ path('editeur',{'id': mustache.id}) }}"><i class="fas fa-pencil-ruler"></i></a>
                         <a href=""><i class="fas fa-download"></i></a>
                     </td>
+                    {{ include('mustache/_delete_form.html.twig') }}
                 </tr>
             {% else %}
                 <tr class="table-danger">
@@ -32,7 +34,6 @@
             {% endfor %}
         </tbody>
     </table>
-
 
 
 {% endblock %}

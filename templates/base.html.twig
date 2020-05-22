@@ -30,6 +30,7 @@
             <style>
                 .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
             </style>
+            {#<script src="{{ asset('js/html2canvas.js')}}"></script>#}
         {% endblock %}
     </head>
     <body>
@@ -74,14 +75,14 @@
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
             <script src="https://unpkg.com/mustache@latest"></script>
             <script>
-                $(function () {
-                    $('button').click(function () {
-                        document.querySelector('.envoyer').innerHTML = 'En cours...';
-                        this.form.submit();
-                        this.disabled = true;
-                    });
-                }
-                );
+                // $(function () {
+                //    $('button').click(function () {
+                //        document.querySelector('.envoyer').innerHTML = 'En cours...';
+                //        this.form.submit();
+                //        this.disabled = true;
+                //    });
+                //  }
+                //  );
             </script>
         {% endblock %}
     </body>

@@ -1,5 +1,22 @@
-<form method="post" action="{{ path('mustache_delete', {'id': mustache.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-    <input type="hidden" name="_method" value="DELETE">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ mustache.id) }}">
-    <button class="btn">Delete</button>
-</form>
+<div class="modal" id="deleteModal-{{ mustache.id }}">
+    <div class="modal-dialog" role="document">
+        <form method="post" action="{{ path('mustache_delete', {'id': mustache.id}) }}">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous supprimer cet enregistrement?</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ mustache.id) }}">
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+        </form>
+    </div>
+</div>

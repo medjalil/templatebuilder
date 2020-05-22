@@ -14,7 +14,8 @@
                 <td><a href="{{ path('environment_show', {'id': environment.id}) }}">{{ environment.name|title }}</td>
                 <td width="20%">
                     <a href="{{ path('environment_edit', {'id': environment.id}) }}"><i class="fas fa-pencil-alt"></i></a>
-                    <a href="{{ path('environment_edit', {'id': environment.id}) }}"><i class="fas fa-trash"></i></a>
+                    <a href="" data-toggle="modal" data-target="#deleteModal-{{ environment.id }}"><i class="fas fa-trash"></i></a>
+                        {{ include('environment/_delete_form.html.twig') }}
                 </td>
             </tr>
         {% endfor %}

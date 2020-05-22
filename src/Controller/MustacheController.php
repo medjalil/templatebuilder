@@ -68,7 +68,7 @@ class MustacheController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('mustache_index');
+            return $this->redirectToRoute('environment_show', ['id' => $mustache->getEnvironment()->getId()]);
         }
 
         return $this->render('mustache/edit.html.twig', [
