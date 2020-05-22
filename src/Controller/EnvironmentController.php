@@ -16,6 +16,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class EnvironmentController extends AbstractController {
 
     /**
+     * @Route("/", name="environment_index", methods={"GET"})
+     */
+    public function index(EnvironmentRepository $environmentRepository): Response {
+        return $this->render('environment/index.html.twig', [
+                    'environments' => $environmentRepository->findAll(),
+        ]);
+    }
+
+    /**
      * @Route("/new", name="environment_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response {
