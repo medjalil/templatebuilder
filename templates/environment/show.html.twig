@@ -16,7 +16,7 @@
                     <a href="{{ path('mustache_edit',{'id':mustache.id}) }}"><i class="fas fa-pencil-alt"></i></a>
                     <a href="" data-toggle="modal" data-target="#deleteModal-{{ mustache.id }}"><i class="fas fa-trash"></i></a>
                     <a href="{{ path('mustache_show',{'id': mustache.id}) }}"><i class="fas fa-pencil-ruler"></i></a>
-                    <a href=""><i class="fas fa-download"></i></a>
+                    <a href="{{ path('home',{'id': mustache.id})}}"><i class="fas fa-download"></i></a>
                 </td>
                 {{ include('mustache/_delete_form.html.twig') }}
             </tr>
