@@ -173,7 +173,7 @@ require(['vs/editor/editor.main'], function () {
     $("#select-data").on('click', function () {
         $("#name-data").val(this.value);
         editor1.setValue($(this).find('option:selected').attr('data-cs'));
-        editor1.getAction('editor.action.format').run();
+
     });
     $("#save_data").click(function (event) {
         event.preventDefault();
@@ -185,6 +185,7 @@ require(['vs/editor/editor.main'], function () {
                 var id = $("#select-data").children(':selected').attr('data-id');
                 var name = $("#name-data").val();
                 var code = JSON.stringify(editor1.getValue());
+                console.log("code : ", code)
                 $.ajax({
                     type: "PUT",
                     beforeSend: function () {
@@ -201,12 +202,14 @@ require(['vs/editor/editor.main'], function () {
                     url: "/api/ressources/" + id,
                     data: `{"content":${code}}`,
                     success: function (resp) {
-                        var code2 = code.replace(/\\n/g, " ");
+                        console.log("response : ", resp)
+                        var code2 = code.replace(/\\n/g, "");
                         code2 = code2.substr(1, code2.length - 2);
                         code2 = code2.replace(/\\/g, "");
                         $(`#select-data option[data-id=${resp.id}]`).remove();
+                        console.log("code2 : ", code2)
                         $("#select-data").append(
-                                `<option data-cs=${code2} value="${name}" data-id="${resp.id}">${name}</option>`
+                                `<option data-cs='${code2}' value="${name}" data-id="${resp.id}">${name}</option>`
                                 );
                         $("#select-data").val(name);
                         if ($("#name-data").hasClass("is-invalid")) {
@@ -217,6 +220,7 @@ require(['vs/editor/editor.main'], function () {
             } else {
                 var name = $("#name-data").val();
                 var code = JSON.stringify(editor1.getValue());
+                console.log("data json", code)
                 $.ajax({
                     type: "POST",
                     beforeSend: function () {
@@ -234,9 +238,11 @@ require(['vs/editor/editor.main'], function () {
                     data: `{"name":"${name}","type":"json","content":${code},"mustache": "/api/mustaches/${mustache_id}"}`,
                     dataType: "json"
                     , success: function (resp) {
-                        var code2 = code.replace(/\\n/g, " ");
+                        console.log("response", resp)
+                        var code2 = code.replace(/\\n/g, "");
                         code2 = code2.substr(1, code2.length - 2);
                         code2 = code2.replace(/\\/g, "");
+                        console.log("code 2", code2)
                         $("#select-data").append(
                                 `<option data-cs='${code2}' value="${name}" data-id="${resp.id}">${name}</option>`
                                 );
@@ -376,7 +382,7 @@ require(['vs/editor/editor.main'], function () {
             }
         });
     });
-    // Exécution de editeur
+    // Exécution de l'editeur
     $("#btn-run").click(function (event) {
         event.preventDefault();
         var css = editor.getValue();
