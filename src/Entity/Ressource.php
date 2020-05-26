@@ -16,8 +16,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  * @ORM\Entity(repositoryClass=RessourceRepository::class)
  * @ApiResource(
  *      normalizationContext={"groups"={"read:ressource"}},
- *      collectionOperations={"get","post"={"validation_groups"={"read:ressource"}}},
- *      itemOperations={"get","DELETE"},
+ *      collectionOperations={"GET","POST"={"validation_groups"={"read:ressource"}}},
+ *      itemOperations={"GET","DELETE","PUT"},
  *      attributes={"pagination_enabled"=false}
  * )
  * @ApiFilter(SearchFilter::class, properties={"mustache": "exact"})

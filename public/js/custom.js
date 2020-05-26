@@ -5,6 +5,25 @@ $('#add_data_item_loader').hide();
 $('#del_data_item_loader').hide();
 $('#add_template_item_loader').hide();
 $('#del_template_item_loader').hide();
+//Formater le code dans l'editeur
+function cssFormat(s) {
+    s = s.replace(/\s*([\{\}\:\;\,])\s*/g, "$1");
+    s = s.replace(/;\s*;/g, ";");
+    s = s.replace(/\,[\s\.\#\d]*{/g, "{");
+    s = s.replace(/([^\s])\{([^\s])/g, "$1 {\n    $2");
+    s = s.replace(/([^\s])\}([^\n]*)/g, "$1\n}\n$2");
+    s = s.replace(/([^\s]);([^\s\}])/g, "$1;\n    $2");
+    return s;
+}
+function jsonFormat(s) {
+    s = s.replace(/\s*([\{\}\:\;\,])\s*/g, "$1");
+    s = s.replace(/;\s*;/g, ";");
+    s = s.replace(/\,[\s\.\#\d]*{/g, "{");
+    s = s.replace(/([^\s])\{([^\s])/g, "$1 {\n\t$2");
+    s = s.replace(/([^\s])\}([^\n]*)/g, "$1\n}\n$2");
+    s = s.replace(/([^\s]);([^\s\}])/g, "$1;\n\t$2");
+    return s;
+}
 // Chargement des ressources (css,data,template) dans les selects
 function reloadRessource() {
     var url = "/api/ressources?mustache=" + mustache_id;
@@ -13,7 +32,6 @@ function reloadRessource() {
         url: url,
         dataType: 'json',
         success: function (resp) {
-
             //$("#select-css").html("");
             $.each(resp, function (key, val) {
                 if (val.type === "css") {
@@ -36,7 +54,7 @@ function reloadRessource() {
     });
 }
 reloadRessource();
-// Création de code
+//Création de code
 require.config({paths: {'vs': 'https://unpkg.com/monaco-editor@latest/min/vs'}});
 require(['vs/editor/editor.main'], function () {
 //Editeur CSS
@@ -47,7 +65,7 @@ require(['vs/editor/editor.main'], function () {
     });
     $("#select-css").on('click', function () {
         $("#name-css").val(this.value);
-        editor.setValue($(this).find('option:selected').attr('data-cs'));
+        editor.setValue(cssFormat($(this).find('option:selected').attr('data-cs')));
     });
     $("#css_save").click(function (event) {
         event.preventDefault();
@@ -55,35 +73,71 @@ require(['vs/editor/editor.main'], function () {
         if (name == "") {
             $("#name-css").addClass("is-invalid");
         } else {
-            var name = $("#name-css").val();
-            var code = JSON.stringify(editor.getValue());
-            $.ajax({
-                type: "POST",
-                beforeSend: function () {
-                    $('#add_css_item_loader').show();
-                    $('#css_save_icon').hide();
-                    $('#css_save').attr('disabled', true);
-                },
-                complete: function () {
-                    $('#add_css_item_loader').hide();
-                    $('#css_save_icon').show();
-                    $('#css_save').attr('disabled', false);
-                },
-                contentType: "application/json",
-                url: "/api/ressources",
-                data: `{"name":"${name}","type":"css","content":${code},"mustache": "/api/mustaches/${mustache_id}"}`,
-                dataType: "json",
-                success: function (resp) {
-                    var code2 = code.replace(/\\n/g, " ");
-                    $("#select-css").append(
-                            `<option data-cs=${code2} value="${name}" data-id="${resp.id}">${name}</option>`
-                            );
-                    $("#select-css").val(name);
-                    if ($("#name-css").hasClass("is-invalid")) {
-                        $("#name-css").removeClass("is-invalid");
+            if ($(`#select-css option[value=${name}]`).length > 0) {
+                var id = $("#select-css").children(':selected').attr('data-id');
+                var name = $("#name-css").val();
+                var code = JSON.stringify(editor.getValue());
+                $.ajax({
+                    type: "PUT",
+                    beforeSend: function () {
+                        $('#add_css_item_loader').show();
+                        $('#css_save_icon').hide();
+                        $('#css_save').attr('disabled', true);
+                    },
+                    complete: function () {
+                        $('#add_css_item_loader').hide();
+                        $('#css_save_icon').show();
+                        $('#css_save').attr('disabled', false);
+                    },
+                    contentType: "application/json",
+                    url: "/api/ressources/" + id,
+                    data: `{"content":${code}}`,
+                    success: function (resp) {
+                        var code2 = code.replace(/\\n/g, " ");
+                        $(`#select-css option[data-id=${resp.id}]`).remove();
+                        $("#select-css").append(
+                                `<option data-cs=${code2} value="${name}" data-id="${resp.id}">${name}</option>`
+                                );
+                        setTimeout(() => {
+                            editor.trigger('anyString', 'editor.action.formatDocument');
+                        }, 200);
+                        $("#select-css").val(name);
+                        if ($("#name-css").hasClass("is-invalid")) {
+                            $("#name-css").removeClass("is-invalid");
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                var name = $("#name-css").val();
+                var code = JSON.stringify(editor.getValue());
+                $.ajax({
+                    type: "POST",
+                    beforeSend: function () {
+                        $('#add_css_item_loader').show();
+                        $('#css_save_icon').hide();
+                        $('#css_save').attr('disabled', true);
+                    },
+                    complete: function () {
+                        $('#add_css_item_loader').hide();
+                        $('#css_save_icon').show();
+                        $('#css_save').attr('disabled', false);
+                    },
+                    contentType: "application/json",
+                    url: "/api/ressources",
+                    data: `{"name":"${name}","type":"css","content":${code},"mustache": "/api/mustaches/${mustache_id}"}`,
+                    dataType: "json",
+                    success: function (resp) {
+                        var code2 = code.replace(/\\n/g, " ");
+                        $("#select-css").append(
+                                `<option data-cs=${code2} value="${name}" data-id="${resp.id}">${name}</option>`
+                                );
+                        $("#select-css").val(name);
+                        if ($("#name-css").hasClass("is-invalid")) {
+                            $("#name-css").removeClass("is-invalid");
+                        }
+                    }
+                });
+            }
         }
     });
     $("#del_css").click(function (event) {
@@ -119,6 +173,7 @@ require(['vs/editor/editor.main'], function () {
     $("#select-data").on('click', function () {
         $("#name-data").val(this.value);
         editor1.setValue($(this).find('option:selected').attr('data-cs'));
+        editor1.getAction('editor.action.format').run();
     });
     $("#save_data").click(function (event) {
         event.preventDefault();
@@ -126,37 +181,72 @@ require(['vs/editor/editor.main'], function () {
         if (name == "") {
             $("#name-data").addClass("is-invalid");
         } else {
-            var code = JSON.stringify(editor1.getValue());
-            $.ajax({
-                type: "POST",
-                beforeSend: function () {
-                    $('#add_data_item_loader').show();
-                    $('#save_data_icon').hide();
-                    $('#save_data').attr('disabled', true);
-                },
-                complete: function () {
-                    $('#add_data_item_loader').hide();
-                    $('#save_data_icon').show();
-                    $('#save_data').attr('disabled', false);
-                },
-                contentType: "application/json",
-                url: "/api/ressources",
-                data: `{"name":"${name}","type":"json","content":${code},"mustache": "/api/mustaches/${mustache_id}"}`,
-                dataType: "json"
-                , success: function (resp) {
-                    var code2 = code.replace(/\\n/g, " ");
-                    code2 = code2.substr(1, code2.length - 2);
-                    code2 = code2.replace(/\\/g, "");
-
-                    $("#select-data").append(
-                            `<option data-cs='${code2}' value="${name}" data-id="${resp.id}">${name}</option>`
-                            );
-                    $("#select-data").val(name);
-                    if ($("#name-data").hasClass("is-invalid")) {
-                        $("#name-data").removeClass("is-invalid")
+            if ($(`#select-data option[value=${name}]`).length > 0) {
+                var id = $("#select-data").children(':selected').attr('data-id');
+                var name = $("#name-data").val();
+                var code = JSON.stringify(editor1.getValue());
+                $.ajax({
+                    type: "PUT",
+                    beforeSend: function () {
+                        $('#add_data_item_loader').show();
+                        $('#data_save_icon').hide();
+                        $('#data_save').attr('disabled', true);
+                    },
+                    complete: function () {
+                        $('#add_data_item_loader').hide();
+                        $('#data_save_icon').show();
+                        $('#data_save').attr('disabled', false);
+                    },
+                    contentType: "application/json",
+                    url: "/api/ressources/" + id,
+                    data: `{"content":${code}}`,
+                    success: function (resp) {
+                        var code2 = code.replace(/\\n/g, " ");
+                        code2 = code2.substr(1, code2.length - 2);
+                        code2 = code2.replace(/\\/g, "");
+                        $(`#select-data option[data-id=${resp.id}]`).remove();
+                        $("#select-data").append(
+                                `<option data-cs=${code2} value="${name}" data-id="${resp.id}">${name}</option>`
+                                );
+                        $("#select-data").val(name);
+                        if ($("#name-data").hasClass("is-invalid")) {
+                            $("#name-data").removeClass("is-invalid");
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                var name = $("#name-data").val();
+                var code = JSON.stringify(editor1.getValue());
+                $.ajax({
+                    type: "POST",
+                    beforeSend: function () {
+                        $('#add_data_item_loader').show();
+                        $('#save_data_icon').hide();
+                        $('#save_data').attr('disabled', true);
+                    },
+                    complete: function () {
+                        $('#add_data_item_loader').hide();
+                        $('#save_data_icon').show();
+                        $('#save_data').attr('disabled', false);
+                    },
+                    contentType: "application/json",
+                    url: "/api/ressources",
+                    data: `{"name":"${name}","type":"json","content":${code},"mustache": "/api/mustaches/${mustache_id}"}`,
+                    dataType: "json"
+                    , success: function (resp) {
+                        var code2 = code.replace(/\\n/g, " ");
+                        code2 = code2.substr(1, code2.length - 2);
+                        code2 = code2.replace(/\\/g, "");
+                        $("#select-data").append(
+                                `<option data-cs='${code2}' value="${name}" data-id="${resp.id}">${name}</option>`
+                                );
+                        $("#select-data").val(name);
+                        if ($("#name-data").hasClass("is-invalid")) {
+                            $("#name-data").removeClass("is-invalid")
+                        }
+                    }
+                });
+            }
         }
     });
     $("#del_data").click(function (event) {
@@ -199,34 +289,67 @@ require(['vs/editor/editor.main'], function () {
         if (name == "") {
             $("#name-template").addClass("is-invalid");
         } else {
-            var code = JSON.stringify(editor2.getValue());
-
-            $.ajax({
-                type: "POST",
-                beforeSend: function () {
-                    $('#add_template_item_loader').show();
-                    $('#save_template_icon').hide();
-                    $('#save_template').attr('disabled', true);
-                },
-                complete: function () {
-                    $('#add_template_item_loader').hide();
-                    $('#save_template_icon').show();
-                    $('#save_template').attr('disabled', false);
-                },
-                contentType: "application/json",
-                url: "/api/ressources",
-                data: `{"name":"${name}","type":"html","content":${code},"mustache": "/api/mustaches/${mustache_id}"}`,
-                dataType: "json"
-                , success: function (resp) {
-                    $("#select-template").append(
-                            `<option data-cs=${code} value="${name}" data-id="${resp.id}">${name}</option>`
-                            );
-                    $("#select-template").val(name);
-                    if ($("#name-template").hasClass("is-invalid")) {
-                        $("#name-template").removeClass("is-invalid")
+            if ($(`#select-template option[value=${name}]`).length > 0) {
+                var id = $("#select-template").children(':selected').attr('data-id');
+                var name = $("#name-template").val();
+                var code = JSON.stringify(editor2.getValue());
+                $.ajax({
+                    type: "PUT",
+                    beforeSend: function () {
+                        $('#add_template_item_loader').show();
+                        $('#template_save_icon').hide();
+                        $('#template_save').attr('disabled', true);
+                    },
+                    complete: function () {
+                        $('#add_template_item_loader').hide();
+                        $('#template_save_icon').show();
+                        $('#template_save').attr('disabled', false);
+                    },
+                    contentType: "application/json",
+                    url: "/api/ressources/" + id,
+                    data: `{"content":${code}}`,
+                    success: function (resp) {
+                        var code2 = code.replace(/\\n/g, " ");
+                        $(`#select-template option[data-id=${resp.id}]`).remove();
+                        $("#select-template").append(
+                                `<option data-cs=${code2} value="${name}" data-id="${resp.id}">${name}</option>`
+                                );
+                        $("#select-template").val(name);
+                        if ($("#name-template").hasClass("is-invalid")) {
+                            $("#name-template").removeClass("is-invalid");
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                var code = JSON.stringify(editor2.getValue());
+                $.ajax({
+                    type: "POST",
+                    beforeSend: function () {
+                        $('#add_template_item_loader').show();
+                        $('#save_template_icon').hide();
+                        $('#save_template').attr('disabled', true);
+                    },
+                    complete: function () {
+                        $('#add_template_item_loader').hide();
+                        $('#save_template_icon').show();
+                        $('#save_template').attr('disabled', false);
+                    },
+                    contentType: "application/json",
+                    url: "/api/ressources",
+                    data: `{"name":"${name}","type":"html","content":${code},"mustache": "/api/mustaches/${mustache_id}"}`,
+                    dataType: "json"
+                    , success: function (resp) {
+                        var code2 = code.replace(/\\n/g, " ");
+                        $("#select-template").append(
+                                `<option data-cs=${code2} value="${name}" data-id="${resp.id}">${name}</option>`
+                                );
+                        $("#select-template").val(name);
+                        if ($("#name-template").hasClass("is-invalid")) {
+                            $("#name-template").removeClass("is-invalid")
+                        }
+                    }
+                });
+            }
         }
     });
     $("#del_template").click(function (event) {
