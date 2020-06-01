@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Attachment;
+use App\Form\AttachmentType;
 use App\Repository\MustacheRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use ZipArchive;
@@ -41,6 +44,29 @@ class HomeController extends AbstractController {
 
             return $response;
         }
+    }
+
+    /**
+     * @Route("/attachment/{id}/new", name="attachment_new")
+     */
+    public function new(Request $request, MustacheRepository $mustacheRepository, $id) {
+        $entityManager = $this->getDoctrine()->getManager();
+        $attachment = new Attachment();
+        $form = $this->createForm(AttachmentType::class, $attachment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $mustache = $mustacheRepository->find($id);
+            $attachment->setMustache($mustache);
+            $entityManager->persist($attachment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('environment_show', ['id' => $mustache->getEnvironment()->getId()]);
+        }
+
+        return $this->render('environment/file_form.html.twig', [
+                    'form' => $form->createView(),
+        ]);
     }
 
 }

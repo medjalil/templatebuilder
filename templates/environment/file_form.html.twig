@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter fichier attaché{% endblock %}
+
+{% block body %}
+    <h1 class="mt-4">Ajouter fichier attaché</h1>
+    <div class="col-4">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary envoyer">{{ button_label|default('Enregistrer') }}</button>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
+
+

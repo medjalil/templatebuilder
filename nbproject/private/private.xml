@@ -3,13 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/medab/Desktop/templatebuilder/public/js/custom.js</file>
-            <file>file:/C:/Users/medab/Desktop/templatebuilder/src/Entity/Ressource.php</file>
-            <file>file:/C:/Users/medab/Desktop/templatebuilder/templates/environment/index.html.twig</file>
-            <file>file:/C:/Users/medab/Desktop/templatebuilder/config/packages/api_platform.yaml</file>
-            <file>file:/C:/Users/medab/Desktop/templatebuilder/templates/environment/_delete_form.html.twig</file>
-            <file>file:/C:/Users/medab/Desktop/templatebuilder/public/css/custom.css</file>
-            <file>file:/C:/Users/medab/Desktop/templatebuilder/templates/mustache/show.html.twig</file>
+            <file>file:/C:/Users/medab/Desktop/templatebuilder/src/Entity/Attachment.php</file>
         </group>
     </open-files>
 </project-private>

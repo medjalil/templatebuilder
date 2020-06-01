@@ -44,8 +44,14 @@ class Mustache {
      */
     private $ressources;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Attachment::class, mappedBy="mustache", orphanRemoval=true)
+     */
+    private $attachments;
+
     public function __construct() {
         $this->ressources = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -112,6 +118,37 @@ class Mustache {
 
     public function __toString() {
         return $this->getId();
+    }
+
+    /**
+     * @return Collection|Attachment[]
+     */
+    public function getAttachments(): Collection
+    {
+        return $this->attachments;
+    }
+
+    public function addAttachment(Attachment $attachment): self
+    {
+        if (!$this->attachments->contains($attachment)) {
+            $this->attachments[] = $attachment;
+            $attachment->setMustache($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttachment(Attachment $attachment): self
+    {
+        if ($this->attachments->contains($attachment)) {
+            $this->attachments->removeElement($attachment);
+            // set the owning side to null (unless already changed)
+            if ($attachment->getMustache() === $this) {
+                $attachment->setMustache(null);
+            }
+        }
+
+        return $this;
     }
 
 }

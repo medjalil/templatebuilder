@@ -11,18 +11,26 @@
 
         {% for mustache in environment.mustaches|sort|reverse %}
             <tr>
-                <td>{{ mustache.name }}</td>
-                <td width="30%">
-                    <a href="{{ path('mustache_edit',{'id':mustache.id}) }}"><i class="fas fa-pencil-alt"></i></a>
-                    <a href="" data-toggle="modal" data-target="#deleteModal-{{ mustache.id }}"><i class="fas fa-trash"></i></a>
-                    <a href="{{ path('mustache_show',{'id': mustache.id}) }}"><i class="fas fa-pencil-ruler"></i></a>
-                    <a href="{{ path('home',{'id': mustache.id})}}"><i class="fas fa-download"></i></a>
-                </td>
-                {{ include('mustache/_delete_form.html.twig') }}
-            </tr>
+                <td>{{ mustache.name }}<br>
+                    {% for file in mustache.attachments %}
+                <li>
+                    {{ file.fileJoint }}
+                </li>
+            {% endfor %}
+        </td>
+        <td width="30%">
+            <a href="{{ path('mustache_edit',{'id':mustache.id}) }}"><i class="fas fa-pencil-alt"></i></a>
+            <a href="" data-toggle="modal" data-target="#deleteModal-{{ mustache.id }}"><i class="fas fa-trash"></i></a>
+            <a href="{{ path('mustache_show',{'id': mustache.id}) }}"><i class="fas fa-pencil-ruler"></i></a>
+            <a href="{{ path('home',{'id': mustache.id})}}"><i class="fas fa-download"></i></a>
+            <a href="{{ path('attachment_new',{'id': mustache.id})}}"><i class="fas fa-plus"></i></a>
+        </td>
+        {{ include('mustache/_delete_form.html.twig') }}
 
-        {% endfor %}
-    </table>
+    </tr>
+
+{% endfor %}
+</table>
 
 
 {% endblock %}

@@ -405,3 +405,11 @@ $("#btn-image").click(function (event) {
         }
     });
 });
+$("#eheight").on('change', function () {
+    var h = $("#eheight").val();
+    $('#renderFrame').height(h);
+});
+$("#ewidth").on('change', function () {
+    var w = $("#ewidth").val();
+    $('#renderFrame').width(w);
+});
